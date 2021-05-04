@@ -1,5 +1,5 @@
-const { resolve }  = require("path");
-const webpack = require('webpack');
+const { resolve, join }  = require("path");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /*Configuration following the https://webpack.js.org/concepts/ */
 module.exports = {
@@ -7,6 +7,14 @@ module.exports = {
   output: {
     path: resolve(__dirname, "./dist"),
     filename: "bundle.js",
-    publicPath: '/dist',
-  }
+    publicPath: './',
+  },
+  devServer: {
+    contentBase: join(__dirname, 'dist'),
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'src/index.html'
+    })
+  ]
 }
