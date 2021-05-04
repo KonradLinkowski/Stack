@@ -1,0 +1,10 @@
+{
+  "name": "stack",
+  "version": "1.0.0",
+  "description": "Three.js game",
+  "main": "index.html",
+  "repository": "git@github.com:KonradLinkowski/Stack.git",
+  "author": "Konrad Linkowski",
+  "license": "MIT",
+  "private": true
+}
