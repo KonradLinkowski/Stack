@@ -13,4 +13,3 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"three":"dKqR","./game-camera":"Ekxj","./moving-tile":"cd7L","./perfect-effect":"F74j","./tile":"raHy"}],"QCba":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("./game"),r=new e.Game;
 },{"./game":"MYCW"}]},{},["QCba"], null)
-//# sourceMappingURL=src.8f7b579e.js.map
