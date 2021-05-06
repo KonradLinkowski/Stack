@@ -17,6 +17,8 @@ import { MovingTile } from "./moving-tile";
 import { PerfectEffect } from "./perfect-effect";
 import { Tile } from "./tile";
 
+import { Stats } from "./stats";
+
 export class Game {
   cubes: Tile[] = [];
   effects: PerfectEffect[] = [];
@@ -28,19 +30,27 @@ export class Game {
   previousTile: Box3;
   clock: Clock;
   index: number = 0;
+  stats: Stats;
+  debug = false;
 
   constructor() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.debug = Boolean(urlParams.get('debug'));
+    if (this.debug) {
+      this.stats = new Stats()
+      document.body.appendChild(this.stats.container)
+    }
     this.clock = new Clock();
     this.$points = document.querySelector("#points");
 
     window.addEventListener("resize", this.onWindowResize.bind(this));
 
-    window.addEventListener("click", this.onClick.bind(this));
-
+    
     this.initScene();
     this.reset();
-
+    
     this.moveUp();
+    this.renderer.domElement.addEventListener("click", this.onClick.bind(this));
 
     this.animate();
   }
@@ -72,6 +82,10 @@ export class Game {
     this.camera.update(delta);
 
     this.renderer.render(this.scene, this.camera.camera);
+
+    if (this.debug) [
+      this.stats.update()
+    ]
   }
 
   moveUp() {
