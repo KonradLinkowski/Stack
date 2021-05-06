@@ -1,10 +1,10 @@
 # Stack
-Stack game clone made with Three.js
+Stack game clone made using Three.js
 
 ## Live
 You can play now [here](https://konradlinkowski.github.io/Stack/)
 
-![gameplay screenshot](./screenshots/screen.png)
+![gameplay gif](./screenshots/game.gif)
 
 ## Installation
 ```
