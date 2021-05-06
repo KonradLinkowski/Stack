@@ -9,7 +9,7 @@ export class PerfectEffect {
     this.mesh = new Mesh(geometry, material);
     this.mesh.position.set(
       position.x,
-      position.y,
+      position.y + 5,
       position.z
     )
     this.mesh.rotation.x = Math.PI / 2

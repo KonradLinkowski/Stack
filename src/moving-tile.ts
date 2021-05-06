@@ -14,12 +14,12 @@ export class MovingTile {
     this.mesh = new Mesh(geometry, material);
   }
 
-  resize(position: Vector2, size: Vector2) {
+  resize(position: Vector3, size: Vector2) {
     this.mesh.geometry.dispose()
     const geometry = new BoxGeometry(size.x, this.height, size.y);
     this.mesh.geometry = geometry
     this.mesh.position.x = position.x
-    this.mesh.position.z = position.y
+    this.mesh.position.z = position.z
   }
 
   setIndex(index: number) {

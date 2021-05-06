@@ -29,8 +29,8 @@ Feel free to create issues and pull requests with your ideas or bug reports :)
 - graphics
   - [x] lighting
   - [x] hue changing
+  - [x] cut fragment should fall off or fade out
   - [ ] better camera angle
-  - [ ] cut fragment should fall off or fade out
 - audio
   - [ ] background music
   - [ ] sound effects

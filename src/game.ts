@@ -16,6 +16,7 @@ import { GameCamera } from "./game-camera";
 import { MovingTile } from "./moving-tile";
 import { PerfectEffect } from "./perfect-effect";
 import { Tile } from "./tile";
+import { FadingTile } from './fading-tile';
 
 import { Stats } from "./stats";
 
@@ -27,11 +28,15 @@ export class Game {
   camera: GameCamera;
   renderer: WebGLRenderer;
   movingTile: MovingTile;
-  previousTile: Box3;
+  previousTile: {
+    size: Vector2;
+    center: Vector3;
+  };
   clock: Clock;
   index: number = 0;
   stats: Stats;
   debug = false;
+  clicked = false;
 
   constructor() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -56,8 +61,11 @@ export class Game {
   }
 
   onClick() {
+    if (this.clicked) return
+    this.clicked = true
     this.cutBox();
     this.moveUp();
+    this.clicked = false
   }
 
   onWindowResize() {
@@ -79,6 +87,12 @@ export class Game {
 
     this.effects.forEach((effect) => effect.update(delta));
 
+    this.cubes.forEach((c) => {
+      if (c instanceof FadingTile) {
+        c.update(delta);
+      }
+    });
+
     this.camera.update(delta);
 
     this.renderer.render(this.scene, this.camera.camera);
@@ -90,70 +104,95 @@ export class Game {
 
   moveUp() {
     this.index += 1;
-    const size = new Vector3();
-    this.previousTile.getSize(size);
-    const center = new Vector3();
-    this.previousTile.getCenter(center);
-
     this.movingTile.resize(
-      new Vector2(center.x, center.z),
-      new Vector2(size.x, size.z)
+      this.previousTile.center,
+      this.previousTile.size
     );
     this.movingTile.setIndex(this.index);
 
-    this.camera.setWatchPoint(new Vector3(0, center.y, 0));
+    this.camera.setWatchPoint(new Vector3(0, this.previousTile.center.y, 0));
   }
 
   cutBox() {
     // calculate previous and current tiles centers
     const currentTile = new Box3().setFromObject(this.movingTile.mesh);
     const currentCenter = new Vector3();
+    this.movingTile.mesh.localToWorld(currentCenter)
     currentTile.getCenter(currentCenter);
-    const previousCenter = new Vector3();
-    this.previousTile.getCenter(previousCenter);
 
     // get vectors difference
-    const diff = currentCenter.sub(previousCenter);
-    const previousSize = new Vector3();
-    this.previousTile.getSize(previousSize);
+    const diff = currentCenter.clone().sub(this.previousTile.center);
+
+    const absDiffX = Math.abs(diff.x)
+    const absDiffZ = Math.abs(diff.z)
+
+    const newSize = this.previousTile.size.clone();
+    newSize.x -= absDiffX
+    newSize.y -= absDiffZ
+
+    if (newSize.x < 0 || newSize.y < 0) {
+      this.reset();
+      return;
+    }
 
     // calculate absolute error
-    const errorX = Math.abs(diff.x) / previousSize.x;
-    const errorZ = Math.abs(diff.z) / previousSize.z;
+    const errorX = absDiffX / this.previousTile.size.x;
+    const errorZ = absDiffZ / this.previousTile.size.y;
 
     // if error is less than arbitrary epsilon than don't cut the tile at all
     const eps = 0.05;
     if (errorX <= eps && errorZ <= eps) {
       diff.x = 0;
       diff.z = 0;
+      newSize.x += absDiffX
+      newSize.y += absDiffZ
 
-      this.spawnEffect(previousCenter, new Vector2(previousSize.x, previousSize.z));
+      this.spawnEffect(this.previousTile.center, this.previousTile.size);
+    } else {
+      const cutSizeX = this.previousTile.size.x - newSize.x
+      const cutSizeZ = this.previousTile.size.y - newSize.y
+
+      const signX = currentCenter.x - this.previousTile.center.x < 0 ? -1 : 1
+      const signZ = currentCenter.z - this.previousTile.center.y < 0 ? -1 : 1
+
+      const position = new Vector3(
+        cutSizeX ? currentCenter.x + signX * newSize.x / 2 : this.previousTile.center.x,
+        this.previousTile.center.y + 10,
+        cutSizeZ ? currentCenter.z + signZ * newSize.y / 2 : this.previousTile.center.z
+      )
+
+
+      const cutTile = new FadingTile(
+        position,
+        new Vector2(cutSizeX || this.previousTile.size.x, cutSizeZ || this.previousTile.size.y),
+        this.index
+      );
+      this.scene.add(cutTile.mesh);
+  
+      this.cubes.push(cutTile);
     }
-    
-    previousSize.x -= Math.abs(diff.x);
-    previousSize.z -= Math.abs(diff.z);
 
-    if (previousSize.x < 0 || previousSize.z < 0) {
-      this.reset();
-      return;
-    }
+    const newCenter = new Vector3(
+      this.previousTile.center.x + diff.x / 2,
+      this.previousTile.center.y + 10, 
+      this.previousTile.center.z + diff.z / 2
+    )
 
-    const cutTile = new Tile(
-      new Vector2(previousCenter.x + diff.x / 2, previousCenter.z + diff.z / 2),
-      new Vector2(previousSize.x, previousSize.z),
-      this.index
-    );
-    this.scene.add(cutTile.mesh);
+    const newTile = new Tile(newCenter, newSize, this.index);
+    this.scene.add(newTile.mesh);
 
-    this.cubes.push(cutTile);
+    this.cubes.push(newTile);
 
-    this.previousTile = new Box3().setFromObject(cutTile.mesh);
+    this.previousTile = {
+      center: newCenter,
+      size: newSize
+    };
 
     // update score
     this.$points.textContent = this.index.toString();
   }
 
-  spawnEffect(position, size) {
+  spawnEffect(position: Vector3, size: Vector2) {
     const plane = new PerfectEffect(position, size, () => {
       this.effects.splice(this.effects.indexOf(plane, 1));
       this.scene.remove(plane.mesh);
@@ -166,12 +205,15 @@ export class Game {
     this.camera.setWatchPoint(new Vector3(0, 0, 0));
     this.index = 0;
 
-    this.movingTile.resize(new Vector2(0, 0), new Vector2(100, 100));
+    this.movingTile.resize(new Vector3(0, 0, 0), new Vector2(100, 100));
     this.movingTile.setIndex(0);
 
     this.cubes.forEach((c) => this.scene.remove(c.mesh));
     this.cubes.length = 0;
-    this.previousTile = new Box3(new Vector3(-50, -10, -50), new Vector3(50, 0, 50));
+    this.previousTile = {
+      center: new Vector3(0, 0, 0),
+      size: new Vector2(100, 100)
+    };
     this.$points.textContent = (0).toString();
   }
 
