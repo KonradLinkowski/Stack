@@ -36,15 +36,14 @@ export class MovingTile {
 
   update(delta: number) {  
     const axis = this.index % 2 == 0 ? 'x' : 'z'
-    this.mesh.position[axis] += delta * 100 * this.direction
+    this.mesh.position[axis] += delta * 150 * this.direction
   
     if (Math.abs(this.mesh.position[axis]) >= 100) {
       this.direction = -this.direction
+      this.mesh.position.clamp(
+        new Vector3(-100, Number.NEGATIVE_INFINITY, -100),
+        new Vector3(100, Number.POSITIVE_INFINITY, 100)
+      )
     }
-
-    this.mesh.position.clamp(
-      new Vector3(-100, Number.NEGATIVE_INFINITY, -100),
-      new Vector3(100, Number.POSITIVE_INFINITY, 100)
-    )
   }
 }

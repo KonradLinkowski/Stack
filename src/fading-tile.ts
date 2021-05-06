@@ -4,7 +4,7 @@ import { Tile } from './tile';
 export class FadingTile extends Tile {
   private material: MeshPhongMaterial;
   private timer = 0;
-  private animationTime = 0.2;
+  private animationTime = 0.3;
 
   constructor(position: Vector3, size: Vector2, index: number) {
     super(position, size, index)
