@@ -1,4 +1,6 @@
 import {
+  Audio,
+  AudioLoader,
   AmbientLight,
   Box3,
   BoxGeometry,
@@ -11,7 +13,12 @@ import {
   Vector2,
   Vector3,
   WebGLRenderer,
+  AudioListener,
 } from "three";
+import * as THREE from "three";
+import { addAudioListenerToCamera } from "./audio";
+import { addAudioListenerToCamera1 } from "./audio";
+
 import { GameCamera } from "./game-camera";
 import { MovingTile } from "./moving-tile";
 import { PerfectEffect } from "./perfect-effect";
@@ -19,7 +26,6 @@ import { Tile } from "./tile";
 import { FadingTile } from './fading-tile';
 
 import { Stats } from "./stats";
-
 export class Game {
   cubes: Tile[] = [];
   effects: PerfectEffect[] = [];
@@ -37,6 +43,7 @@ export class Game {
   stats: Stats;
   debug = false;
   clicked = false;
+
 
   constructor() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -58,6 +65,8 @@ export class Game {
     this.renderer.domElement.addEventListener("click", this.onClick.bind(this));
 
     this.animate();
+    addAudioListenerToCamera(this.camera); //bg music
+
   }
 
   onClick() {
@@ -66,6 +75,7 @@ export class Game {
     this.cutBox();
     this.moveUp();
     this.clicked = false
+    addAudioListenerToCamera1();
   }
 
   onWindowResize() {
@@ -199,6 +209,7 @@ export class Game {
     });
     this.scene.add(plane.mesh);
     this.effects.push(plane);
+
   }
 
   reset() {

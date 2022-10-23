@@ -1,4 +1,4 @@
-import { BoxGeometry, Clock, Color, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera, Scene, Vector2, Vector3 } from 'three';
+import { BoxGeometry, Audio, AudioLoader, Clock, Color, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera, Scene, Vector2, Vector3, AudioListener } from 'three';
 
 export class GameCamera {
   camera: PerspectiveCamera

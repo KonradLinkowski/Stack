@@ -24,6 +24,9 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "libxmljs": "^0.19.10",
+    "node-gyp": "^9.3.0",
+    "src": "^1.1.2",
     "three": "^0.128.0"
   },
   "staticFiles": {
