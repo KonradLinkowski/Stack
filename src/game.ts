@@ -17,7 +17,7 @@ import {
 } from "three";
 import * as THREE from "three";
 import { addAudioListenerToCamera } from "./audio";
-import { addAudioListenerToCamera1 } from "./audio";
+import { tile_sound } from "./audio";
 
 import { GameCamera } from "./game-camera";
 import { MovingTile } from "./moving-tile";
@@ -65,7 +65,7 @@ export class Game {
     this.renderer.domElement.addEventListener("click", this.onClick.bind(this));
 
     this.animate();
-    addAudioListenerToCamera(this.camera); //bg music
+    addAudioListenerToCamera(this.camera);
 
   }
 
@@ -75,7 +75,7 @@ export class Game {
     this.cutBox();
     this.moveUp();
     this.clicked = false
-    addAudioListenerToCamera1();
+    tile_sound();
   }
 
   onWindowResize() {
