@@ -33,28 +33,47 @@
       html {
         overflow: hidden;
       }
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: 'Lato', sans-serif;
+				background: black;
+				user-select: none;
+			}
 
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Lato', sans-serif;
-        background: black;
-        cursor: none;
-        user-select: none;
-      }
+			#points {
+				text-align: center;
+				color: white;
+				font-size: 5rem;
+				position: fixed;
+				top: 2rem;
+				width: 100%;
+			}
 
-      #points {
-        text-align: center;
-        color: white;
-        font-size: 5rem;
-        position: fixed;
-        top: 2rem;
-        width: 100%;
-      }
-    </style>
-    <script type="module" defer src="./index.ts"></script>
-  </head>
-  <body>
-    <div id="points">0</div>
-  </body>
+			#btn {
+				display: flex;
+				justify-content: center;
+				background-color: white;
+				font-size: 2.5rem; 
+				position: fixed;
+				bottom: 2rem;
+				left: 2rem;
+				width: 3.3rem;
+				height: 3rem;
+				border-radius: 50%;
+				padding: 0.4rem;
+			}
+		</style>
+		<script defer src="./index.ts"></script>
+	</head>
+	<body>
+
+		<div id="points">0</div>
+		<button id="btn">
+			A
+		</button>
+		<script>
+		</script>
+	</body>
+
 </html>
