@@ -1,0 +1,26 @@
+#startContainer {
+  text-align: center;
+  color: white;
+  font-size: 5rem;
+  position: fixed;
+  top: 2rem;
+  width: 100%;
+}
+
+#finishContainer {
+  display: none;
+  text-align: center;
+  color: white;
+  font-size: 5rem;
+  position: fixed;
+  top: 2rem;
+  width: 100%;
+}
+
+#points {
+  display: none;
+}
+
+#start {
+  font-size: 30px;
+}

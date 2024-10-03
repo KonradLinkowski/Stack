@@ -37,6 +37,7 @@ export class Game {
   stats: Stats;
   debug = false;
   clicked = false;
+  gameStarted = false
 
   constructor() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -50,22 +51,62 @@ export class Game {
 
     window.addEventListener("resize", this.onWindowResize.bind(this));
 
-    
     this.initScene();
     this.reset();
-    
+    this.clickToSTart();
     this.moveUp();
-    this.renderer.domElement.addEventListener("click", this.onClick.bind(this));
 
+    this.renderer.domElement.addEventListener("click", this.onClick.bind(this));
     this.animate();
   }
 
+  clickToSTart() {
+    const startHandler = () => {
+      const points = document.querySelector("#points") as HTMLElement;
+      points.style.display = "block";
+
+      this.gameStarted = true
+
+      const startContainer = document.querySelector("#startContainer") as HTMLElement;
+      startContainer.style.display = "none";
+
+      document.removeEventListener("click", startHandler);
+    }
+
+    const startContainer = document.querySelector("#startContainer") as HTMLElement;
+    startContainer.style.display = "block";
+    document.addEventListener("click", startHandler);
+  }
+
+  gameOver() {
+    this.gameStarted = false;
+
+    const finishContainer = document.querySelector("#finishContainer") as HTMLElement;
+    finishContainer.style.display = "block";
+    
+    const score = document.querySelector("#score") as HTMLElement;
+    score.innerHTML = `Your Score: ${this.index - 1}`
+
+    const points = document.querySelector("#points") as HTMLElement;
+    points.style.display = "none";
+
+    this.reset();
+
+    const finishHandler = () => {
+      finishContainer.style.display = "none";
+      document.removeEventListener("click", finishHandler);
+    }
+
+    setTimeout(() => {
+      this.gameStarted = true;
+      document.addEventListener("click", finishHandler);
+    }, 100);
+  }
+
   onClick() {
-    if (this.clicked) return
-    this.clicked = true
+    if (!this.gameStarted) return;
     this.cutBox();
     this.moveUp();
-    this.clicked = false
   }
 
   onWindowResize() {
@@ -131,7 +172,7 @@ export class Game {
     newSize.y -= absDiffZ
 
     if (newSize.x < 0 || newSize.y < 0) {
-      this.reset();
+      this.gameOver();
       return;
     }
 
