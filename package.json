@@ -18,6 +18,7 @@
     "vite": "^3.1.0"
   },
   "dependencies": {
+    "stack": "file:",
     "three": "^0.145.0"
   },
   "staticFiles": {
