@@ -75,6 +75,7 @@ export class Game {
 
     const startContainer = document.querySelector("#startContainer") as HTMLElement;
     startContainer.style.display = "block";
+
     document.addEventListener("click", startHandler);
   }
 
@@ -94,6 +95,9 @@ export class Game {
 
     const finishHandler = () => {
       finishContainer.style.display = "none";
+
+      const points = document.querySelector("#points") as HTMLElement;
+      points.style.display = "block";
       document.removeEventListener("click", finishHandler);
     }
 
